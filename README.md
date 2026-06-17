@@ -4,7 +4,7 @@ A full-stack web application for creating and managing music playlists. Built wi
 
 ---
 
-## Quick Start (Docker — recommended)
+## Quick Start (Docker )
 
 The fastest way to run the project. Requires only Docker and Docker Compose.
 
