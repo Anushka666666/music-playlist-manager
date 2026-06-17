@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: playlist_db
+    environment:
+      POSTGRES_DB: playlist_manager
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./server/setup.sql:/docker-entrypoint-initdb.d/01-setup.sql
+      - ./docker-init.sql:/docker-entrypoint-initdb.d/02-auth.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d playlist_manager"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: playlist_backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: playlist_manager
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: super-secret-jwt-key-change-in-production
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: playlist_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
