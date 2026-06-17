@@ -9,7 +9,7 @@ A full-stack web application for creating and managing music playlists. Built wi
 The fastest way to run the project. Requires only Docker and Docker Compose.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/music-playlist-manager.git
+git clone https://github.com/Anushka666666/music-playlist-manager.git
 cd music-playlist-manager
 docker-compose up --build
 ```
